@@ -54,7 +54,7 @@
 ![PRs mergeados](https://img.shields.io/badge/PRs%20mergeados-21-blue?style=flat-square&logo=github&logoColor=white)
 ![Archivos](https://img.shields.io/badge/Archivos%20cambiados-220-orange?style=flat-square)
 ![Adiciones](https://img.shields.io/badge/%2B21%2C791%20líneas-added-success?style=flat-square)
-![Eliminaciones](https://img.shields.io/badge/-4%2C653%20líneas-removed-red?style=flat-square)
+![Eliminaciones](https://img.shields.io/badge/4%2C653%20lineas%20eliminadas-red?style=flat-square)
 
 ### 📱 app-niiopay — últimos 7 días *(Jun 2–9, 2026)*
 ![Commits main](https://img.shields.io/badge/Commits%20a%20main-6-brightgreen?style=flat-square&logo=git&logoColor=white)
