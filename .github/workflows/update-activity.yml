@@ -2,12 +2,8 @@ name: Update Recent Activity
 
 on:
   schedule:
-    # Runs every day at 00:00 UTC
     - cron: '0 0 * * *'
-  workflow_dispatch: # Allow manual trigger
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   update-readme:
@@ -16,71 +12,54 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout .github repo
+      - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Update activity in README
+        uses: actions/github-script@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const repos = ['api-niiopay', 'app-niiopay', 'app-crm-niiopay'];
+            const org = 'techniiopay';
+            let section = '';
 
-      - name: Fetch recent commits and update README
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ORG: techniiopay
-        run: |
-          # Install GitHub CLI (already available on ubuntu-latest)
-          REPOS=("api-niiopay" "app-niiopay" "app-crm-niiopay")
-          
-          ACTIVITY_SECTION=""
-          
-          for REPO in "${REPOS[@]}"; do
-            # Get last 5 commits via GitHub API
-            COMMITS=$(curl -s -H "Authorization: token $GH_TOKEN" \
-              "https://api.github.com/repos/$ORG/$REPO/commits?per_page=5" \
-              | jq -r '.[] | "| [`" + .sha[0:7] + "`](https://github.com/'"$ORG"'/$REPO/commit/" + .sha + ") | " + (.commit.message | split("\n")[0] | .[0:80]) + " | " + (.commit.author.date | split("T")[0]) + " |"')
-            
-            if [ -n "$COMMITS" ]; then
-              ACTIVITY_SECTION+="
-### 📦 $REPO
-"
-              ACTIVITY_SECTION+="| Commit | Mensaje | Fecha |
-"
-              ACTIVITY_SECTION+="|--------|---------|-------|
-"
-              ACTIVITY_SECTION+="$COMMITS
-"
-            fi
-          done
-          
-          # Build the full replacement block
-          NEW_BLOCK="<!-- ACTIVITY-START -->
-${ACTIVITY_SECTION}
-> ⚡ Actualizado automáticamente · [Ver todos los commits](https://github.com/$ORG)
-<!-- ACTIVITY-END -->"
-          
-          # Replace content between markers in README
-          python3 - <<'PYEOF'
-          import re
-          with open("profile/README.md", "r") as f:
-              content = f.read()
-          
-          import subprocess
-          new_block = subprocess.run(["bash", "-c", "printf '%s' \"$NEW_BLOCK\""], capture_output=True, text=True).stdout
-          
-          updated = re.sub(
-              r'<!-- ACTIVITY-START -->.*?<!-- ACTIVITY-END -->',
-              new_block,
-              content,
-              flags=re.DOTALL
-          )
-          
-          with open("profile/README.md", "w") as f:
-              f.write(updated)
-          print("README updated successfully")
-          PYEOF
+            for (const repo of repos) {
+              try {
+                const { data: commits } = await github.rest.repos.listCommits({
+                  owner: org,
+                  repo: repo,
+                  per_page: 5
+                });
+                const emoji = repo === 'api-niiopay' ? '📦' : repo === 'app-niiopay' ? '📱' : '🗂️';
+                section += '\n### ' + emoji + ' ' + repo + '\n';
+                section += '| Commit | Mensaje | Fecha |\n';
+                section += '|--------|---------|-------|\n';
+                for (const c of commits) {
+                  const sha = c.sha.substring(0, 7);
+                  const msg = c.commit.message.split('\n')[0].substring(0, 80);
+                  const date = c.commit.author.date.split('T')[0];
+                  const url = 'https://github.com/' + org + '/' + repo + '/commit/' + c.sha;
+                  section += '| [`' + sha + '`](' + url + ') | ' + msg + ' | ' + date + ' |\n';
+                }
+              } catch (e) {
+                console.log('Error fetching ' + repo + ': ' + e.message);
+              }
+            }
 
-      - name: Commit and push changes
+            const footer = '\n> ⚡ Actualizado: ' + new Date().toISOString().split('T')[0] + ' · [Ver todos los commits](https://github.com/' + org + ')';
+            const newBlock = '<!-- ACTIVITY-START -->' + section + footer + '\n<!-- ACTIVITY-END -->';
+
+            let readme = fs.readFileSync('profile/README.md', 'utf8');
+            const updated = readme.replace(/<!-- ACTIVITY-START -->[\s\S]*?<!-- ACTIVITY-END -->/, newBlock);
+            fs.writeFileSync('profile/README.md', updated);
+            console.log('README updated!');
+
+      - name: Commit changes
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
           git add profile/README.md
           git diff --staged --quiet || git commit -m "chore: update recent activity [skip ci]"
           git push
