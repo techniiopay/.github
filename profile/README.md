@@ -68,3 +68,30 @@
 *Construyendo el futuro de los pagos digitales en Latinoamérica* 🌎
 
 </div>
+
+
+---
+
+## 🔄 Actividad reciente
+
+<!-- ACTIVITY-START -->
+### 📦 api-niiopay
+| Commit | Mensaje | Fecha |
+|--------|---------|-------|
+| [`79c2433`](https://github.com/techniiopay/api-niiopay/commit/79c2433) | feat(mcp): payout a banco/BRE-B (Colombia) e internacional/SWIFT vía MCP | Jun 9, 2026 |
+| [`a97759d`](https://github.com/techniiopay/api-niiopay/commit/a97759d) | release: insight Niia, tarifas por servicio + fixes acumulados de develop | Jun 9, 2026 |
+| [`1e7edd5`](https://github.com/techniiopay/api-niiopay/commit/1e7edd5) | feat(transactions): asesor financiero IA en detalle de transacción + tarifas por servicio | Jun 8, 2026 |
+| [`d423af2`](https://github.com/techniiopay/api-niiopay/commit/d423af2) | fix(gnosis): invalidar caché tras verifyPhone (onboarding colgado) + diagnóstico recovery | Jun 8, 2026 |
+| [`aa17ce0`](https://github.com/techniiopay/api-niiopay/commit/aa17ce0) | fix: ruta static assets 404 /pse-frame.html (3DS Gnosis) tras migración SWC | Jun 8, 2026 |
+
+### 📱 app-niiopay
+| Commit | Mensaje | Fecha |
+|--------|---------|-------|
+| [`a5ebd34`](https://github.com/techniiopay/app-niiopay/commit/a5ebd34) | Merge pull request #102 from techniiopay/development | Jun 4, 2026 |
+| [`20e8610`](https://github.com/techniiopay/app-niiopay/commit/20e8610) | feat(gnosis): Safe migration banner, old Safe balance and hide recharge CTA | Jun 4, 2026 |
+| [`b209bea`](https://github.com/techniiopay/app-niiopay/commit/b209bea) | feat(shared): add countries constants module | Jun 4, 2026 |
+| [`9ddeafa`](https://github.com/techniiopay/app-niiopay/commit/9ddeafa) | docs(app-review): add Apple/Google review responses and improve iOS purpose strings | Jun 4, 2026 |
+| [`5b7f572`](https://github.com/techniiopay/app-niiopay/commit/5b7f572) | feat(contacts): add prominent-disclosure consent flow for device contacts | Jun 4, 2026 |
+<!-- ACTIVITY-END -->
+
+> ⚡ Actualizado automáticamente · [Ver todos los commits](https://github.com/techniiopay)
